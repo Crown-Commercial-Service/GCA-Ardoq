@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problem, Opportunities and Questions Dashboard</title>
+    <style>
+        body {
+            background-color: #f9fafb;
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+            position: relative;
+        }
+        h1, h2, h3 { color: #1f2937; }
+        
+        .top-right-stamp {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            font-size: 0.75em;
+            color: #94a3b8;
+            text-align: right;
+            line-height: 1.4;
+        }
+
+        .intro-container {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            margin-top: 40px;
+        }
+        .intro-title {
+            color: #0f172a;
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .framework-card {
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .fw-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .fw-opp { background-color: #3b82f6; }
+        .fw-prob { background-color: #ef4444; }
+        .fw-ques { background-color: #8b5cf6; }
+        
+        .framework-card h3 { margin-top: 0; color: #1e293b; }
+        .framework-card p { font-size: 0.9em; color: #475569; line-height: 1.5; }
+        .framework-card ul { font-size: 0.9em; color: #475569; padding-left: 20px; margin-bottom: 0; }
+        .priority-legend {
+            display: flex; gap: 20px; flex-wrap: wrap; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 0.85em;
+        }
+        .p-leg-item { display: flex; align-items: center; gap: 8px; color: #64748b;}
+        .p-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .p-high { background-color: #ef4444; }
+        .p-med { background-color: #f59e0b; }
+        .p-low { background-color: #10b981; }
+
+        .dashboard { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }
+        .info-card {
+            border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; flex: 1; min-width: 250px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); background-color: #fff;
+        }
+        .info-card h2 { margin-top: 0; font-size: 1.1em; border-bottom: 2px solid #f3f4f6; padding-bottom: 12px; margin-bottom: 20px; }
+        .big-stat { font-size: 2.8em; font-weight: bold; color: #111827; margin: 10px 0 5px 0; line-height: 1.1; }
+        .stat-desc { color: #6b7280; margin-bottom: 20px; font-size: 0.95em; font-weight: 500; }
+
+        .chart-container { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+        .pie-chart { width: 100px; height: 100px; border-radius: 50%; box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); }
+        .pie-priority { background: conic-gradient(#ef4444 0% 41%, #f59e0b 41% 82%, #10b981 82% 100%); }
+        .pie-rating { background: conic-gradient(#3b82f6 0% 73%, #ef4444 73% 86%, #f59e0b 86% 100%); }
+
+        .legend { display: flex; flex-direction: column; gap: 10px; }
+        .legend-item { display: flex; align-items: center; font-size: 0.85em; color: #4b5563; }
+        .legend-color { width: 14px; height: 14px; border-radius: 4px; margin-right: 8px; flex-shrink: 0; }
+        .legend-text { display: flex; flex-direction: column; }
+        .legend-count { font-weight: bold; color: #111827; }
+
+        .color-high { background-color: #ef4444; }
+        .color-med { background-color: #f59e0b; }
+        .color-low { background-color: #10b981; }
+        .color-opp { background-color: #3b82f6; }
+        .color-prob { background-color: #ef4444; }
+        .color-ques { background-color: #f59e0b; }
+
+        .progress-list { display: flex; flex-direction: column; gap: 12px; }
+        .progress-item { font-size: 0.85em; }
+        .progress-label-row { display: flex; justify-content: space-between; margin-bottom: 4px; color: #4b5563; }
+        .progress-bar-bg { background-color: #f3f4f6; border-radius: 4px; height: 8px; width: 100%; overflow: hidden; }
+        .progress-bar-fill { height: 100%; border-radius: 4px; }
+        .fill-cap { width: 100%; background-color: #3b82f6; }
+        .fill-cost { width: 82%; background-color: #ef4444; }
+        .fill-support { width: 73%; background-color: #f59e0b; }
+        .fill-user { width: 27%; background-color: #10b981; }
+
+        /* Search & Filter Controls */
+        .controls-container {
+            background-color: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .search-bar-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .search-bar-row input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-bar-row input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-tab {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #fff;
+            font-weight: bold;
+            color: #4b5563;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+        .filter-tab:hover { background: #f9fafb; border-color: #9ca3af; }
+        .filter-tab.active { background-color: #1f2937; color: white; border-color: #111827; }
+
+        details.bus-cap {
+            margin-top: 15px; background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        summary.bus-cap-title {
+            font-size: 1.2em; font-weight: bold; cursor: pointer; background-color: #f9fafb; padding: 15px; border-radius: 8px; outline: none;
+        }
+        summary.bus-cap-title:hover { background-color: #f3f4f6; }
+        .bus-cap-content { padding: 10px 20px 20px 20px; }
+        
+        details.priority-group {
+            margin-top: 15px; background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;
+        }
+        .outline-high { border-left: 6px solid #ef4444; }
+        .outline-medium { border-left: 6px solid #f59e0b; }
+        .outline-low { border-left: 6px solid #10b981; }
+
+        summary.priority-title {
+            font-size: 1.1em; font-weight: bold; color: #374151; cursor: pointer; padding: 12px 15px; background-color: #fafafa; border-bottom: 1px solid #e5e7eb; outline: none;
+        }
+        summary.priority-title:hover { background-color: #f3f4f6; color: #000; }
+        .priority-content { padding: 15px; }
+
+        .card-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;
+        }
+        
+        .assessment-card {
+            background-color: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; transition: all 0.2s ease-in-out; display: flex; flex-direction: column; gap: 10px;
+        }
+        .assessment-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-color: #d1d5db; transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #f3f4f6; padding-bottom: 10px; margin-bottom: 5px; gap: 10px;
+        }
+        .card-section {
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        .card-label {
+            font-size: 0.8em; text-transform: uppercase; color: #6b7280; font-weight: bold; letter-spacing: 0.05em;
+        }
+
+        .app-link { color: #2563eb; text-decoration: none; font-weight: bold; }
+        .app-link:hover { text-decoration: underline; }
+        
+        .assessment-tile {
+            display: inline-block; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 0.9em; box-shadow: 1px 1px 3px rgba(0,0,0,0.05); white-space: normal;
+        }
+        .tile-problem { background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171; }
+        .tile-opportunity { background-color: #dbeafe; color: #1d4ed8; border: 1px solid #60a5fa; }
+        .tile-question { background-color: #fef3c7; color: #b45309; border: 1px solid #fbbf24; }
+        
+        .dig-cap-label {
+            display: inline-block; background-color: #f3f4f6; border: 1px solid #d1d5db; color: #374151; padding: 4px 8px; margin: 3px 2px; border-radius: 12px; font-size: 0.8em; line-height: 1.3;
+        }
+        .concern-label {
+            display: inline-block; background-color: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; padding: 3px 6px; margin: 2px 2px; border-radius: 6px; font-size: 0.85em; font-weight: 500;
+        }
+        .no-caps { color: #9ca3af; font-style: italic; font-size: 0.85em; }
+        .description-text { font-size: 0.9em; color: #4b5563; line-height: 1.5; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="top-right-stamp" id="timestamp">
+        Generated from Ardoq data<br>
+    </div>
+
+    <!-- Intro section based on the image -->
+    <div class="intro-container">
+        <h1 class="intro-title">The Opportunity, Problem & Question Framework</h1>
+        <p style="color: #475569; margin-bottom: 25px;">The data reported below is based on the latest extracted dataset. The assessments within the estate have been categorised using the following architectural framework.</p>
+        
+        <div class="framework-grid">
+            <div class="framework-card">
+                <div class="fw-badge fw-opp">OPPORTUNITY</div>
+                <h3>Consolidate & Scale</h3>
+                <p>Focuses on areas of high strategic alignment where estate optimisation is possible. Key initiatives involve consolidating fragmented tenant environments (such as AWS, Azure, and CRM platforms).</p>
+                <strong>Typical Assessment:</strong>
+                <ul>
+                    <li>Cloud environment merges</li>
+                    <li>Common SaaS standardisation</li>
+                    <li>Horizon scanning</li>
+                </ul>
+            </div>
+            
+            <div class="framework-card">
+                <div class="fw-badge fw-prob">PROBLEM</div>
+                <h3>Remediate & Fix</h3>
+                <p>Addresses immediate operational risks, poor user journey, technical debt, or critical process failure points. Prioritised focus is placed on fixing high-impact areas like Buyer Marketplaces (CAS) and identity management (IDAM).</p>
+                <strong>Typical Assessment:</strong>
+                <ul>
+                    <li>Legacy software risks</li>
+                    <li>Regulatory & security gaps</li>
+                </ul>
+            </div>
+            
+            <div class="framework-card">
+                <div class="fw-badge fw-ques">QUESTION</div>
+                <h3>Investigate & Map</h3>
+                <p>Targeted at systems with highly uncertain futures, unclear ownership, or ambiguous strategic utility. Requires deeper discovery to determine whether to retain, replace, or retire the application.</p>
+                <strong>Typical Assessment:</strong>
+                <ul>
+                    <li>Redundant business utilities</li>
+                    <li>Low-usage custom software</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="priority-legend">
+            <div class="p-leg-item"><div class="p-dot p-high"></div> <strong>HIGH PRIORITY</strong> Requires immediate remediation or mitigation</div>
+            <div class="p-leg-item"><div class="p-dot p-med"></div> <strong>MEDIUM PRIORITY</strong> Scheduled for standard cycle review</div>
+            <div class="p-leg-item"><div class="p-dot p-low"></div> <strong>LOW PRIORITY</strong> Retained under routine support parameters</div>
+        </div>
+    </div>
+
+    <h2>Executive Summary</h2>
+
+    <div class="dashboard">
+        <!-- Overview Stats -->
+        <div class="info-card">
+            <h2>Overview</h2>
+            <div class="big-stat">22</div>
+            <div class="stat-desc">Total Assessments</div>
+            <div class="big-stat">4</div>
+            <div class="stat-desc">Business Capability Areas</div>
+        </div>
+
+        <!-- Priorities Pie -->
+        <div class="info-card">
+            <h2>Priority Breakdown</h2>
+            <div class="chart-container">
+                <div class="pie-chart pie-priority"></div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color color-high"></div><div class="legend-text"><span>High</span><span class="legend-count">9 items (41%)</span></div></div>
+                    <div class="legend-item"><div class="legend-color color-med"></div><div class="legend-text"><span>Medium</span><span class="legend-count">9 items (41%)</span></div></div>
+                    <div class="legend-item"><div class="legend-color color-low"></div><div class="legend-text"><span>Low</span><span class="legend-count">4 items (18%)</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rating Pie -->
+        <div class="info-card">
+            <h2>Assessment Types</h2>
+            <div class="chart-container">
+                <div class="pie-chart pie-rating"></div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color color-opp"></div><div class="legend-text"><span>Opportunity</span><span class="legend-count">16 items (73%)</span></div></div>
+                    <div class="legend-item"><div class="legend-color color-prob"></div><div class="legend-text"><span>Problem</span><span class="legend-count">3 items (14%)</span></div></div>
+                    <div class="legend-item"><div class="legend-color color-ques"></div><div class="legend-text"><span>Question</span><span class="legend-count">3 items (14%)</span></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estate Concerns Progress Bars -->
+        <div class="info-card">
+            <h2>Top Estate Concerns</h2>
+            <div class="progress-list">
+                <div class="progress-item">
+                    <div class="progress-label-row"><span>🧩 Capability Gaps</span><strong>11 items</strong></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill fill-cap"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label-row"><span>💰 High Cost</span><strong>9 items</strong></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill fill-cost"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label-row"><span>🛠️ Supportability</span><strong>8 items</strong></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill fill-support"></div></div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-label-row"><span>👤 User Journey / Process</span><strong>6 items</strong></div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill fill-user"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Detailed Assessment Report</h2>
+    
+    <div class="controls-container">
+        <div class="search-bar-row">
+            <input type="text" id="searchInput" placeholder="Search by Subject (App) or Concern..." onkeyup="filterCards()">
+        </div>
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="setTabFilter('all', this)">All Types</button>
+            <button class="filter-tab" onclick="setTabFilter('opportunity', this)">💡 Opportunities</button>
+            <button class="filter-tab" onclick="setTabFilter('problem', this)">🚨 Problems</button>
+            <button class="filter-tab" onclick="setTabFilter('question', this)">❓ Questions</button>
+        </div>
+    </div>
+
+    <div class="nested-report" id="reportContainer">
+        
+            <details class="bus-cap" open>
+                <summary class="bus-cap-title">
+                    &#9662; Business Capability: Core
+                </summary>
+                <div class="bus-cap-content">
+
+                    <details class="priority-group outline-high" open>
+                        <summary class="priority-title">&#9656; Priority: High (4 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="problem">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-problem">🚨 AS-46: Buyer marketplaces unacceptable</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/a245d8821155c8f7ac96d103" target="_blank" class="app-link subject-item">Contract Award Service (CAS)</a>, <a href="https://gca.ardoq.com/app/component-overview/d9eb9dfe1e2780a02b472698" target="_blank" class="app-link subject-item">Government eMarketplace (Basware)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Basware is not considered a strategic platform. The platform has a high <strong>cost to serve</strong> in terms of the number of agreements it host. In terms of capabilities there is duplication with other platforms. The business would like to investigate alternatives.
+
+The Contract Award Service has significant technical debt. Some of this may need to be repaid and other debt may be acceptable if the platform is end of life after G-Cloud 15. This platform also handles only a small number of commercial agreements.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Access - Authentication and Authorisation | Enterprise Technology - Security | Customer Experience - Buyer Fulfilment - Further Competition | Customer Experience - Buyer Fulfilment - Direct Award | Customer Experience - Buyer Fulfilment - Down Select</span> <span class="dig-cap-label">Customer Experience - Access - Authentication and Authorisation | Enterprise Technology - Security | Customer Experience - Supplier Fulfilment - Supplier Participation | Customer Experience - Buyer Fulfilment - Browse and Compare | Customer Experience - Buyer Fulfilment - Down Select | Customer Experience - Buyer Fulfilment - Direct Award | Customer Experience - Intelligent Procurement - Rates Management | Customer Experience - Intelligent Procurement - Category Management</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Capability related</span> <span class="concern-label concern-item">High Cost</span> <span class="concern-label concern-item">Tech Debt</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-61: Self Serve opportunities</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/090a649f9e326c4cd851435e" target="_blank" class="app-link subject-item">Self Serve</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Autonomous sourcing is identified as a capability gap. Building Self Serve could address this. Furthermore, Self Serve could bring AI capabilities to the buyer journey. Ultimately the opportunity allows GCA to stay competitive with other solutions and not lose out to competitors (especially in the tech pillar).</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="no-caps">N/A</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">User Journey</span> <span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="question">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-question">❓ AS-58: eSourcing platform review</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/d7b85d55983af5ca93d02704" target="_blank" class="app-link subject-item">Jaggaer (eSourcing)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">A thorough review is required into GCA eSourcing platform. The contract is currently with Jaggaer and although the contract has been renewed until 2028, a strategic project will evaluate all options.
+
+The user journey may suffice for expert buyers but is generally regarded as a poor user experience for novice or casual buyers. Jaggaer is certainly a costly offering and the implementation of the Jaggaer environments has some concerns. Process also highlighted to call out that an evaluation of GCA Business processes may lead to some improvements, if the actions were actioned. Tech Debt called out as one of the high priority tech debt items may be attributable to rate limiting restrictions.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Access - Authentication and Authorisation | Customer Experience - Supplier Fulfilment - Supplier Participation</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Process</span> <span class="concern-label concern-item">High Cost</span> <span class="concern-label concern-item">User Journey</span> <span class="concern-label concern-item">Tech Debt</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-62: Social Value Technical Assessment and EA Review</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/911cb672a5b9ccb6be2b065b" target="_blank" class="app-link subject-item">Thrive Platform</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text"><strong>Thrive Social Value</strong> is a software platform used to <strong>measure, manage, evidence and report social value</strong> across an organisation, contracts, suppliers and projects. In simple terms, it helps organisations prove the positive impact they create beyond just delivering a service or product.
+
+<strong>Social value</strong> means the wider economic, social and environmental benefits created through work or procurement, such as local jobs, apprenticeships, volunteering, community investment, carbon reduction, wellbeing improvements, supplier diversity and support for local businesses. In UK public procurement, the Social Value Model is used to select relevant outcomes and criteria for contracts.
+
+Thrive helps organisations:
+
+1.  <strong>Capture social value activities</strong>  
+For example, training delivered, volunteering hours, local employment, environmental initiatives or community support.
+
+2.  <strong>Measure impact</strong>  
+It can convert activities into measurable outcomes and, where appropriate, financial proxy values.
+
+3.  <strong>Collect evidence</strong>  
+It supports auditability by storing proof, updates, supplier submissions and supporting documents.
+
+4.  <strong>Report progress</strong>  
+Dashboards and reports help show performance against social value commitments, contract obligations or ESG objectives.
+
+5.  <strong>Manage suppliers and projects</strong>  
+Organisations can track social value delivery across multiple contracts, frameworks, suppliers, departments or programmes.
+
+In a procurement or government context, Thrive would typically be used to track whether suppliers are actually delivering the social value promises they made during tendering, rather than leaving those commitments as static bid responses. For GCA, it would support supplier onboarding, reporting, dashboards, evidence capture and performance monitoring against agreed social value measures.
+
+<strong>Thrive is a social value management and reporting platform that helps organisations turn social impact commitments into measurable, evidenced and reportable outcomes.</strong></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Intelligent Procurement - Category Management</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="priority-group outline-medium" open>
+                        <summary class="priority-title">&#9656; Priority: Medium (3 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="question">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-question">❓ AS-44: Customer Relationship Management(CRM) -  duplication in CRM tooling</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/8b165ce8bd833398ad28ab43" target="_blank" class="app-link subject-item">Salesforce</a>, <a href="https://gca.ardoq.com/app/component-overview/171ef727a4198f82205c09a5" target="_blank" class="app-link subject-item">Salesforce [GGIS]</a>, <a href="https://gca.ardoq.com/app/component-overview/3bf6969affe24c5b363eb346" target="_blank" class="app-link subject-item">Salesforce [GCIAF]</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Investigate whether multiple Salesforce tenants could be merged and additional tenants decommissioned.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Access - Authentication and Authorisation | Enterprise Technology - Security | Customer Experience - Customer Relationship Management | Customer Experience - Intelligent Procurement - eSourcing | Customer Experience - Intelligent Procurement - Contract Management | Customer Experience - Intelligent Procurement - Supplier Management</span> <span class="dig-cap-label">Customer Experience - Grant Management</span> <span class="dig-cap-label">Enterprise Technology - Design &amp; Continuous Improvement Tools | Customer Experience - Customer Relationship Management</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-48: Strategic technology for learning platform</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/c5b033e5842eed40f41364db" target="_blank" class="app-link subject-item">Grants Self-Assessment</a>, <a href="https://gca.ardoq.com/app/component-overview/56cd2e04126dca97abc981fa" target="_blank" class="app-link subject-item">Grants Centre of Excellence (GCoE)</a>, <a href="https://gca.ardoq.com/app/component-overview/06e1874e62e54635905bfe00" target="_blank" class="app-link subject-item">Government Commercial College</a>, <a href="https://gca.ardoq.com/app/component-overview/95c32b5316d31b63ebd57bcf" target="_blank" class="app-link subject-item">Knowledge Hub (aka KHub) [GCO]</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">An engagement project is looking at combining technologies into one strategic platform. KHub and GCOE would then be decommissioned. Capability consolidation has identified duplicate applications in capabilities <strong>HR - Learning Management</strong>. This was the reason a business case was raised to address this.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Human Resources - Learning Management</span> <span class="dig-cap-label">Customer Experience - Grant Management | Customer Experience - Buyer Fulfilment</span> <span class="dig-cap-label">Customer Experience - Marketing | Customer Experience - Access - Social Media | Enterprise Technology - Collaboration Tools</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="problem">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-problem">🚨 AS-47: Legacy/sunset services to be deccomissioned</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/528ecd642986266d27a6e593" target="_blank" class="app-link subject-item">Digital Marketplace (DMP 1.0)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">These services are either in legacy or sunset status and therefore due to be decommissioned in order to rationalise the estate further.
+
+The concern is primarily cost and supportability - still needs security patches. The fact that this application is still live also poses a question on process and why application lifecycle management is not particularly mature at GCA. GCA has poor capability and track record for lifecycle rationalisation.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="no-caps">N/A</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">High Cost</span> <span class="concern-label concern-item">Supportability</span> <span class="concern-label concern-item">Process</span> <span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="priority-group outline-low" open>
+                        <summary class="priority-title">&#9656; Priority: Low (2 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="question">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-question">❓ AS-42: Collaboration tools</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/66ff8dd2e2d2d0da94200063" target="_blank" class="app-link subject-item">MailChimp (CCS)</a>, <a href="https://gca.ardoq.com/app/component-overview/99240b82b1ff41be7be0167e" target="_blank" class="app-link subject-item">MailChimp (GCF)</a>, <a href="https://gca.ardoq.com/app/component-overview/9c5fbdc7765be8e47c3af93a" target="_blank" class="app-link subject-item">NewZapp</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Consolidate to a fewer number of strategic messaging platforms to reduce cost, improve governance, and streamline integrations. The Communications and Engagement team should consider evaluating NewZapp for internal Communications. This duplication was identified during the capability mapping phase.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Enterprise Technology - Collaboration Tools | Enterprise Technology - End user Compute</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Capability related</span> <span class="concern-label concern-item">High Cost</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-54: Duplicate tenants in GCA</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/31bc4847ce202f611cec1382" target="_blank" class="app-link subject-item">Jira (GCG Digital)</a>, <a href="https://gca.ardoq.com/app/component-overview/7f1fc5d13c26448324399b8c" target="_blank" class="app-link subject-item">Canva(GCF)</a>, <a href="https://gca.ardoq.com/app/component-overview/7a2472dd902e37a774a87fe9" target="_blank" class="app-link subject-item">Confluence (GCG Digital)</a>, <a href="https://gca.ardoq.com/app/component-overview/66f7f7ed859c2ea1cc76524f" target="_blank" class="app-link subject-item">Tussell Online Market Intelligence Tool</a>, <a href="https://gca.ardoq.com/app/component-overview/2177f2617b12be9b61516f9f" target="_blank" class="app-link subject-item">Tussell Online Market Intelligence Tool [GCGF]</a>, <a href="https://gca.ardoq.com/app/component-overview/5222e2ee56784500217f2fd4" target="_blank" class="app-link subject-item">Jira (GCA)</a>, <a href="https://gca.ardoq.com/app/component-overview/2593b4f8b9218d8b5f5624e6" target="_blank" class="app-link subject-item">Canva</a>, <a href="https://gca.ardoq.com/app/component-overview/572c1ac35c38187f0e13af81" target="_blank" class="app-link subject-item">Confluence (GCA)</a>, <a href="https://gca.ardoq.com/app/component-overview/99240b82b1ff41be7be0167e" target="_blank" class="app-link subject-item">MailChimp (GCF)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Duplicate tenants for SaaS products as a result of GCA Phase 2 and the estate. Support and maintenance and management of contracts, licences, config are all a concern and result in higher costs.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Enterprise Technology - Demand Management | Enterprise Technology - Development &amp; Testing Tools | Enterprise Technology - Service Management</span> <span class="dig-cap-label">Enterprise Technology - Collaboration Tools | Enterprise Technology - End user Compute</span> <span class="dig-cap-label">Enterprise Technology - Demand Management</span> <span class="dig-cap-label">Customer Experience - Intelligent Procurement - Category Management</span> <span class="dig-cap-label">Enterprise Technology - Collaboration Tools | Enterprise Technology - End user Compute | Human Resources - Learning Management</span> <span class="dig-cap-label">Enterprise Technology - Collaboration Tools | Enterprise Technology - End user Compute | Enterprise Technology - Design &amp; Continuous Improvement Tools | Enterprise Technology - Service Management | Enterprise Technology - External System Integration | Enterprise Data &amp; AI - Data Management</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">High Cost</span> <span class="concern-label concern-item">Supportability</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+            <details class="bus-cap" open>
+                <summary class="bus-cap-title">
+                    &#9662; Business Capability: Core, Enabling
+                </summary>
+                <div class="bus-cap-content">
+
+                    <details class="priority-group outline-high" open>
+                        <summary class="priority-title">&#9656; Priority: High (1 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-43: Identity and Access Management(IDAM) consolidation</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/d8ec1053c1b2dd2907e19503" target="_blank" class="app-link subject-item">Supplier Information Registration and Sign In(SIRSI)</a>, <a href="https://gca.ardoq.com/app/component-overview/849593c26e559f8ce9a4c932" target="_blank" class="app-link subject-item">Auth0(RMI)</a>, <a href="https://gca.ardoq.com/app/component-overview/f6f05de7689ba4abc8b040bc" target="_blank" class="app-link subject-item">GOV.UK One Login</a>, <a href="https://gca.ardoq.com/app/component-overview/b8aa020f2ff0224d88b3a571" target="_blank" class="app-link subject-item">AWS Cognito</a>, <a href="https://gca.ardoq.com/app/component-overview/73af150580aa6a7967203aac" target="_blank" class="app-link subject-item">Auth0(PPG)</a>, <a href="https://gca.ardoq.com/app/component-overview/a64664fc98e3ae22b438da36" target="_blank" class="app-link subject-item">Public Procurement Gateway (PPG)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Consolidate registration workflows into a unified platform, in order to improve user experience and reduce duplication in the estate. This GCA strategic project is in alpha phase.
+
+Capability mapping has identified IDAM and Buyer Registration as a key area of overlap.
+
+Duplication of hosting results in high costs and concerns on the ability to justify from a sustainability perspective.
+
+Whilst the concern is primarily around the buyer journey, another concern is that further duplication of SSO in the Mendix hosted platforms. Each of the five applications has its own local IDAM.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Access - Authentication and Authorisation | Enterprise Technology - Security | Customer Experience - Supplier Fulfilment - Supplier Participation</span> <span class="dig-cap-label">Customer Experience - Access - Authentication and Authorisation | Enterprise Technology - Security</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">User Journey</span> <span class="concern-label concern-item">High Cost</span> <span class="concern-label concern-item">Capability related</span> <span class="concern-label concern-item">Supportability</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="priority-group outline-medium" open>
+                        <summary class="priority-title">&#9656; Priority: Medium (1 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-64: Master Data Model - data sources</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/87f85c07db35bf819a5fcf45" target="_blank" class="app-link subject-item">Construction</a>, <a href="https://gca.ardoq.com/app/component-overview/3db219f7092a0fb3383c1c3d" target="_blank" class="app-link subject-item">Achilles Platform</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Achillies platform may present an opportunity for supplier data to be pulled into the Data Warehouse for opportunity to use for supplier evaluation. This is currently be trialled for a small set of agreements (construction) but may have further scope. This relates to the category management capability.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Intelligent Procurement - Supplier Management</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Master Data Model</span> <span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+            <details class="bus-cap" open>
+                <summary class="bus-cap-title">
+                    &#9662; Business Capability: Enabling
+                </summary>
+                <div class="bus-cap-content">
+
+                    <details class="priority-group outline-high" open>
+                        <summary class="priority-title">&#9656; Priority: High (3 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="problem">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-problem">🚨 AS-66: Tech Debt Management</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/83b39c4bbfaa3a13d6a700d7" target="_blank" class="app-link subject-item">The Orange Book Management of Risk - Principles and Concepts</a>, <a href="https://gca.ardoq.com/app/component-overview/66de9e5dbc86d2065582d3d7" target="_blank" class="app-link subject-item">Digital Standard</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">This assessment result evaluates the ability of the organisation to manage technical debt across the organisation&#x27;s application and infrastructure portfolio, in a central repository. Likely this is down to people and processes more than tooling although Ardoq has been evaluated for tech debt management (Contract Award Service). DDS may also wish to record process debt and poor quality (measured in Purview). The assessment identifies accumulated technical liabilities, including outdated technologies, deferred maintenance, suboptimal architectural decisions, and inadequate documentation. Results provide a prioritised remediation roadmap, quantifying the effort and cost required to address identified debt items. Key metrics include debt ratio, remediation effort estimates, and risk exposure levels associated with unresolved technical debt.
+
+Functional standard GOVS 005 asks departments to self assess against this type of reporting. This is challenging if tech debt is held in various sources.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="no-caps">N/A</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Process</span> <span class="concern-label concern-item">Governance</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-55: APIM tool consolidation</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/b65f6affc0211cde1015ed43" target="_blank" class="app-link subject-item">Azure API Manager(APIM)</a>, <a href="https://gca.ardoq.com/app/component-overview/af36094928738d1977deeffd" target="_blank" class="app-link subject-item">API Gateway</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Consider whether GCA really needs two APIM tools or whether standards should mandate a strategic technology. Alignment of policies/standards and reduced overhead for support would be the desired outcome.
+
+1.  AWS API Gateway (mandated at GCA)
+
+2.  Azure</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="no-caps">N/A</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Governance</span> <span class="concern-label concern-item">Supportability</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-41: Workday user migration</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/839c0baa62b376f360ceb0b0" target="_blank" class="app-link subject-item">Workday</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">New GCA staff have been migrate onto GCA Workday (and down stream systems consuming HR data). CO tenant will remain in use for other ALBs.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Finance - Finance Reporting | Human Resources - Employee Relations | Finance - Budgeting | Human Resources - Talent Managment | Human Resources - Recruitment | Human Resources - Learning Management</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Supportability</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="priority-group outline-medium" open>
+                        <summary class="priority-title">&#9656; Priority: Medium (5 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-57: Low code platform technology choice</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/0aca0df45e19503198542838" target="_blank" class="app-link subject-item">Mendix - Low Code</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Evaluate Mendix as whether the correct technology choice for the organisation in terms of support etc. The contract ends next year and this presents an opportunity to scan the horizon and identify possible alternatives. Previous scanning for this type of technology has identified that Power Apps and other Microsoft technologies may be suitable.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Access - Authentication and Authorisation | Enterprise Technology - Security | Enterprise Technology - Development &amp; Testing Tools</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Supportability</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-59: Learning platforms review/consolidation</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/cf9aa90a8e3acf4a57300d99" target="_blank" class="app-link subject-item">Government Commercial Function Careers Website</a>, <a href="https://gca.ardoq.com/app/component-overview/6a5e24d6d646906cfdb53b97" target="_blank" class="app-link subject-item">Civil Service Learning</a>, <a href="https://gca.ardoq.com/app/component-overview/c5b033e5842eed40f41364db" target="_blank" class="app-link subject-item">Grants Self-Assessment</a>, <a href="https://gca.ardoq.com/app/component-overview/56cd2e04126dca97abc981fa" target="_blank" class="app-link subject-item">Grants Centre of Excellence (GCoE)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Capability mapping identifies a lot of duplication in this area, on face value. This should be explored further.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Customer Experience - Access - Web | Human Resources - Recruitment</span> <span class="dig-cap-label">Human Resources - Learning Management</span> <span class="dig-cap-label">Customer Experience - Grant Management | Customer Experience - Buyer Fulfilment</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="no-caps">None listed</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-60: Azure Hosting of GCA Services</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/8bf6f28c89ea7fd1c46fee0f" target="_blank" class="app-link subject-item">Azure Compute(Cabinet Office)</a>, <a href="https://gca.ardoq.com/app/component-overview/0de4620f8641420d30d46815" target="_blank" class="app-link subject-item">Azure Compute(GCA)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">An opportunity exists for consolidation onto a single Azure tenant. At the moment GCA has an Azure tenant and Cabinet Office Digital has another tenant. The shared services remit is part of a government strategy.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="no-caps">N/A</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">High Cost</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-45: AWS Hosting of GCA services</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/8a45b19d5ce5de4a689e329d" target="_blank" class="app-link subject-item">AWS Compute (GCA)</a>, <a href="https://gca.ardoq.com/app/component-overview/e97ae98095c1ab0b9ef0e8e9" target="_blank" class="app-link subject-item">AWS Compute (Cabinet Office Digital)</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">An opportunity to <strong>consolidate on a single tenant</strong> model exists. At the moment applications are deployed on multiple AWS tenants. The shared services remit is part of a government strategy.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="no-caps">N/A</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">High Cost</span> <span class="concern-label concern-item">Supportability</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-70: Code review toolset</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/a688013e9c2e31a582052a99" target="_blank" class="app-link subject-item">Code Climate</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">This assessment result documents the investigation of tooling options for code review processes, driven by identified code quality deficiencies within the Contract Award Service (CAS). The evaluation focuses on selecting appropriate tooling to address and remediate the quality issues uncovered during the assessment. Findings and recommendations from this review will inform tooling adoption decisions to improve overall code quality standards within CAS.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Enterprise Technology - Development &amp; Testing Tools</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Tech Debt</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="priority-group outline-low" open>
+                        <summary class="priority-title">&#9656; Priority: Low (2 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-49: Cabinet Office Shared Services</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/898abd2a1ee9fe12ed3f31b3" target="_blank" class="app-link subject-item">Ardoq</a>, <a href="https://gca.ardoq.com/app/component-overview/9fc159ae8c6618c5d873803f" target="_blank" class="app-link subject-item">Dun &amp; Bradstreet (CCS)</a>, <a href="https://gca.ardoq.com/app/component-overview/7a6f3fc7a13a3294b29671cf" target="_blank" class="app-link subject-item">Dun &amp; Bradstreet Company Information</a>, <a href="https://gca.ardoq.com/app/component-overview/839c0baa62b376f360ceb0b0" target="_blank" class="app-link subject-item">Workday</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">In future there is likely to be consideration of moving to single tenants for SaaS where multiple tenants exist in wider cabinet office. Potential candidates - Workday, Ardoq, Dun &amp; Bradstreet. This is part of Machinery of Government horizon scanning.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Enterprise Technology - Design &amp; Continuous Improvement Tools</span> <span class="dig-cap-label">Enterprise Data &amp; AI - Reporting and Analytics | Enterprise Data &amp; AI - Operational Insights | Customer Experience - Intelligent Procurement - Supplier Management</span> <span class="dig-cap-label">Finance - Finance Reporting | Human Resources - Employee Relations | Finance - Budgeting | Human Resources - Talent Managment | Human Resources - Recruitment | Human Resources - Learning Management</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">High Cost</span> <span class="concern-label concern-item">Supportability</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-40: Data governance/catalogue capability assessment</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/f76c89764636035845f510e5" target="_blank" class="app-link subject-item">Microsoft Purview</a>, <a href="https://gca.ardoq.com/app/component-overview/e589d7dfc1ed73cea0805073" target="_blank" class="app-link subject-item">Informatica</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">Informatica and Purview have some overlapping capabilities - in particular Data Governance and catalogue. Further evaluation would be required in order to review the opportunities for consolidation.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="dig-cap-label">Enterprise Data &amp; AI - Data Management | Enterprise Technology - Internal System Integration</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+            <details class="bus-cap" open>
+                <summary class="bus-cap-title">
+                    &#9662; Business Capability: Strategic
+                </summary>
+                <div class="bus-cap-content">
+
+                    <details class="priority-group outline-high" open>
+                        <summary class="priority-title">&#9656; Priority: High (1 items)</summary>
+                        <div class="priority-content">
+                            <div class="card-grid">
+
+                                <div class="assessment-card" data-rating="opportunity">
+                                    <div class="card-header">
+                                        <span class="assessment-tile tile-opportunity">💡 AS-68: AI investment for customer facing applications</span>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">SUBJECT (App or other)</span>
+                                        <div class="subject-container"><a href="https://gca.ardoq.com/app/component-overview/35003b43d67ef7a281590b75" target="_blank" class="app-link subject-item">Recommender Service</a></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Description</span>
+                                        <div class="description-text">This assessment result evaluates the current and planned investments in artificial intelligence technologies applied to customer-facing applications across the enterprise. The assessment covers ROI analysis, maturity levels, and strategic alignment of AI initiatives within the customer engagement portfolio. Key focus areas include automation of customer interactions, personalisation capabilities, and the effectiveness of AI-driven decision support in front-end systems. Findings provide actionable recommendations to optimize AI spend and prioritize high-impact investment opportunities.</div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Capabilities</span>
+                                        <div><span class="no-caps">N/A</span></div>
+                                    </div>
+                                    <div class="card-section">
+                                        <span class="card-label">Concerns</span>
+                                        <div class="concern-container"><span class="concern-label concern-item">Capability related</span></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </details>
+
+                </div>
+            </details>
+
+        </div>
+    </div>
+
+    <script>
+        // Set dynamic timestamp
+        const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' };
+        document.getElementById('timestamp').innerHTML += new Date().toLocaleDateString('en-GB', dateOptions);
+
+        let currentTabFilter = 'all';
+
+        function setTabFilter(type, btnElement) {
+            currentTabFilter = type;
+            
+            // Update active button state
+            document.querySelectorAll('.filter-tab').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            filterCards();
+        }
+
+        function filterCards() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const capabilities = document.querySelectorAll('.bus-cap');
+
+            capabilities.forEach(cap => {
+                let capHasVisibleCards = false;
+                const priorityGroups = cap.querySelectorAll('.priority-group');
+
+                priorityGroups.forEach(group => {
+                    let groupHasVisibleCards = false;
+                    const cards = group.querySelectorAll('.assessment-card');
+
+                    cards.forEach(card => {
+                        const rating = card.getAttribute('data-rating');
+                        
+                        // Extract text for searching Subjects and Concerns
+                        const subjects = card.querySelector('.subject-container').innerText.toLowerCase();
+                        const concerns = card.querySelector('.concern-container').innerText.toLowerCase();
+
+                        // Check tab filter match
+                        const matchesTab = (currentTabFilter === 'all' || rating === currentTabFilter);
+                        
+                        // Check search query match (matching either subjects or concerns)
+                        const matchesSearch = (searchQuery === '' || subjects.includes(searchQuery) || concerns.includes(searchQuery));
+
+                        if (matchesTab && matchesSearch) {
+                            card.classList.remove('hidden');
+                            groupHasVisibleCards = true;
+                            capHasVisibleCards = true;
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+
+                    // Hide empty priority groups
+                    if (groupHasVisibleCards) {
+                        group.classList.remove('hidden');
+                    } else {
+                        group.classList.add('hidden');
+                    }
+                });
+
+                // Hide empty capability containers
+                if (capHasVisibleCards) {
+                    cap.classList.remove('hidden');
+                } else {
+                    cap.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

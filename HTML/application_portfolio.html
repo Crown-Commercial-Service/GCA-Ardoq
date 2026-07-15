@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application Portfolio Search</title>
+  <style>
+    :root {
+      --navy: #0b1f33;
+      --blue: #1d70b8;
+      --blue-dark: #003078;
+      --light-blue: #e8f1f8;
+      --green: #00703c;
+      --green-light: #dff5e8;
+      --purple: #4c2c92;
+      --grey-050: #f8f8f8;
+      --grey-100: #f3f2f1;
+      --grey-300: #b1b4b6;
+      --grey-500: #505a5f;
+      --grey-700: #2f2f2f;
+      --white: #ffffff;
+      --focus: #ffdd00;
+      --shadow: 0 4px 18px rgba(11, 31, 51, 0.10);
+      --radius: 10px;
+      
+      /* Persona Colors */
+      --color-buyer: #1d70b8;
+      --color-staff: #4c2c92;
+      --color-supplier: #00703c;
+      --color-citizen: #f47738;
+      --color-central-gov: #28a197;
+      --color-wider-public: #d53880;
+      --color-esender: #b58840;
+      --color-admin: #505a5f;
+      --color-default: #b1b4b6;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--grey-700);
+      background: var(--grey-050);
+      line-height: 1.5;
+    }
+
+    .site-header {
+      background: var(--navy);
+      color: var(--white);
+      border-bottom: 5px solid var(--blue);
+    }
+
+    .header-inner,
+    .page-container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .service-name {
+      margin: 0;
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .service-subtitle {
+      margin: 4px 0 0;
+      color: #d9e6f2;
+      font-size: 0.95rem;
+    }
+
+    .timestamp-tag {
+      font-size: 0.8rem;
+      color: #b0c4de;
+      font-style: italic;
+    }
+
+    main {
+      padding: 38px 0 56px;
+    }
+
+    .intro {
+      margin-bottom: 28px;
+    }
+
+    .intro h1 {
+      margin: 0 0 10px;
+      color: var(--navy);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+    }
+
+    .intro p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--grey-500);
+      font-size: 1.05rem;
+    }
+
+    .guidance-notice {
+      background-color: var(--light-blue);
+      border-left: 4px solid var(--blue);
+      color: var(--navy);
+      padding: 12px 16px;
+      margin-top: 18px;
+      font-weight: 700;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Legend Styles */
+    .legend-panel {
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      background: var(--white);
+      border: 1px solid #d8dde1;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .legend-panel h3 {
+      margin: 0 0 12px 0;
+      font-size: 1rem;
+      color: var(--navy);
+    }
+
+    .legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--grey-700);
+    }
+
+    .color-box {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+    }
+
+    .filter-panel {
+      padding: 24px;
+      margin-bottom: 28px;
+      background: var(--white);
+      border: 1px solid #d8dde1;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: 2fr repeat(3, 1fr);
+      gap: 18px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    input, select, button {
+      width: 100%;
+      min-height: 46px;
+      font: inherit;
+    }
+
+    input, select {
+      padding: 10px 12px;
+      color: var(--grey-700);
+      background: var(--white);
+      border: 2px solid var(--grey-500);
+      border-radius: 4px;
+    }
+
+    input:focus, select:focus, button:focus {
+      outline: 4px solid var(--focus);
+      outline-offset: 0;
+      border-color: var(--navy);
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .button {
+      width: auto;
+      padding: 8px 16px;
+      border: 0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .button-primary {
+      color: var(--white);
+      background: var(--green);
+      box-shadow: 0 2px 0 #002d18;
+    }
+
+    .button-primary:hover {
+      background: #005a30;
+    }
+
+    .button-secondary {
+      color: var(--navy);
+      background: var(--grey-100);
+      border: 1px solid var(--grey-300);
+    }
+
+    .button-secondary:hover {
+      background: #e5e5e5;
+    }
+
+    .results-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .results-bar h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 1.35rem;
+    }
+
+    .results-count {
+      color: var(--grey-500);
+      font-weight: 700;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .app-card {
+      display: flex;
+      flex-direction: column;
+      padding: 22px;
+      background: var(--white);
+      border: 1px solid #d8dde1;
+      border-top: 6px solid var(--color-default);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* Dynamic Border Colors based on Primary Persona */
+    .app-card.persona-buyer { border-top-color: var(--color-buyer); }
+    .app-card.persona-staff { border-top-color: var(--color-staff); }
+    .app-card.persona-supplier { border-top-color: var(--color-supplier); }
+    .app-card.persona-citizen { border-top-color: var(--color-citizen); }
+    .app-card.persona-central-gov { border-top-color: var(--color-central-gov); }
+    .app-card.persona-wider-public { border-top-color: var(--color-wider-public); }
+    .app-card.persona-esender { border-top-color: var(--color-esender); }
+    .app-card.persona-admin { border-top-color: var(--color-admin); }
+
+    .app-card h3 {
+      margin: 0 0 8px;
+      color: var(--blue-dark);
+      font-size: 1.3rem;
+      line-height: 1.25;
+    }
+
+    .app-card h3 a {
+      color: var(--blue-dark);
+      text-decoration: none;
+    }
+
+    .app-card h3 a:hover {
+      text-decoration: underline;
+    }
+
+    .app-card p {
+      margin: 0 0 18px;
+      color: var(--grey-500);
+      font-size: 0.95rem;
+      white-space: pre-line;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .tag-product {
+      color: #004e2a;
+      background: var(--green-light);
+      border: 1px solid #80c9a3;
+    }
+
+    .meta {
+      display: grid;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #e3e5e7;
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .meta-label {
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    .meta-row a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+
+    .meta-row a:hover {
+      text-decoration: underline;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e3e5e7;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 42px 24px;
+      text-align: center;
+      background: var(--white);
+      border: 1px dashed var(--grey-300);
+      border-radius: var(--radius);
+    }
+
+    .empty-state h3 {
+      margin-top: 0;
+      color: var(--navy);
+    }
+
+    @media (max-width: 960px) {
+      .filter-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .header-inner,
+      .page-container {
+        width: min(100% - 22px, 1180px);
+      }
+      main {
+        padding-top: 26px;
+      }
+      .filter-grid, .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .filter-actions, .results-bar, .card-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <p class="service-name">Application Portfolio</p>
+        <p class="service-subtitle">Search and explore applications across the organisation</p>
+      </div>
+      <div class="timestamp-tag">
+        Data generated from Ardoq on 13 July 2026
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">Find an application</h1>
+      <p>
+        Search by application name or filter the portfolio by persona, hosting organisation
+        and owning directorate.
+      </p>
+      <div class="guidance-notice" role="alert">
+        This page is limited to live applications used externally by customers plus key staff applications.
+      </div>
+    </section>
+
+    <!-- Legend Panel -->
+    <section class="legend-panel" aria-label="Persona color legend">
+      <h3>Tile Border Colors (Primary Persona)</h3>
+      <div class="legend-items">
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-buyer)"></div> Buyer</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-staff)"></div> Staff</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-supplier)"></div> Supplier</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-citizen)"></div> Citizen</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-central-gov)"></div> Central Government</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-wider-public)"></div> Wider public sector</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-esender)"></div> eSender</div>
+      </div>
+    </section>
+
+    <section class="filter-panel" aria-label="Application filters">
+      <div class="filter-grid">
+        <div class="field">
+          <label for="searchInput">Application name</label>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="For example, Supplier Portal"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="field">
+          <label for="personaFilter">Persona</label>
+          <select id="personaFilter">
+            <option value="">All personas</option>
+            <option value="Buyer">Buyer</option>
+            <option value="Central Government">Central Government</option>
+            <option value="Citizen">Citizen</option>
+            <option value="Staff">Staff</option>
+            <option value="Supplier">Supplier</option>
+            <option value="Wider public sector">Wider public sector</option>
+            <option value="eSender">eSender</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="hostingFilter">Hosting</label>
+          <select id="hostingFilter">
+            <option value="">All hosting</option>
+            <option value="3rd. Party">3rd. Party</option>
+            <option value="AWS-Cloud-CO">AWS-Cloud-CO</option>
+            <option value="AWS-Cloud-GCA">AWS-Cloud-GCA</option>
+            <option value="Cloud">Cloud</option>
+            <option value="Google-Cloud-NQC">Google-Cloud-NQC</option>
+            <option value="SaaS">SaaS</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="directorateFilter">Owning directorate</label>
+          <select id="directorateFilter">
+            <option value="">All directorates</option>
+            <option value="Commercial & Procurement Operations">Commercial & Procurement Operations</option>
+            <option value="Customer Experience">Customer Experience</option>
+            <option value="Digital and Data Services">Digital and Data Services</option>
+            <option value="Finance, Planning and Performance">Finance, Planning and Performance</option>
+            <option value="Government Commercial Function">Government Commercial Function</option>
+            <option value="Human Resources">Human Resources</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="button button-primary" id="searchButton" type="button">Search portfolio</button>
+        <button class="button button-secondary" id="clearButton" type="button">Clear filters</button>
+      </div>
+    </section>
+
+    <section aria-live="polite" aria-labelledby="results-title">
+      <div class="results-bar">
+        <h2 id="results-title">Applications</h2>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+
+      <div class="card-grid" id="resultsGrid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <h3>No applications found</h3>
+        <p>Try changing or clearing one or more filters.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const applications = [
+  {
+    "name": "Agency Supply Teachers",
+    "description": "Monolithic system for the procurement of Supply Teachers  The Agency Supply Teachers digital solution provides access to a commercial agreement for online and offline services for schools in the UK (excepting independent for-profit schools) to select agencies who can provide supply teachers. The service will enable education users to securely login, via the Department for Education login, or via a CCS registration module (for those without DfE single-sign on), to a digital service hosted by CCS on an AWS platform.",
+    "persona": "Buyer",
+    "hosting": "3rd. Party",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/1922d4e21697debd6788294f",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/1922d4e21697debd6788294f",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Apply for a Grant",
+    "description": "**Apply for a Grant** is the integrated partner service to **Find a Grant**. While \"Find\" is the search engine, \"Apply\" is the engine that powers the actual submission process. **Apply for a Grant** is a sophisticated digital tool that allows government departments and arm's-length bodies (ALBs) to build, host, and manage online application forms. It is designed to replace fragmented, paper-based, or manual email processes with a standardized, secure, and user-centric digital journey.",
+    "persona": "Supplier, Citizen, Buyer",
+    "hosting": "AWS-Cloud-CO",
+    "directorate": "Government Commercial Function",
+    "productManager": "Marc Leonard",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/0f7901fdeda256aa7685a2b6",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/4176152ff5382b7cc72efd81",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/0f7901fdeda256aa7685a2b6",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Click Travel",
+    "description": "Book travel and accommodation  The Click Travel service is a web based travel platform provisioned and hosted by TravelPerk.  Access is granted via the suppliers web portal.  This solution provides GCA with:  *   A web-based portal for travel management booking services  *   Comprehensive travel booking capabilities across rail, hotel, and air travel  *   Travel reporting functionality  *   Booking Solutions for UK Points of Sale  *   Booking Solutions for UK & Overseas Points of Sale  The framework includes a lot for Booking Solutions for Specialist Needs. GCA currently have access to CTM to allow for exceptional \u201chigh touch\u201d booking solutions such as: global pandemic, war/conflict, repatriation and other non normal travel bookings.  The framework also includes a lot for Booking Solutions for Venues & Events via Calder.  GCA staff can book via telephone.",
+    "persona": "Staff",
+    "hosting": "",
+    "directorate": "Finance, Planning and Performance",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/8c172592bb38da6df31d1b11",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Kathryn Comrie, James Atkinson",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/daea457464a219f90e7aa6d7, https://gca.ardoq.com/app/component-overview/060f84786a2e647eaa6f3711",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/8c172592bb38da6df31d1b11",
+    "hasProductOwner": false
+  },
+  {
+    "name": "CNZ Search",
+    "description": "Carbon Net Zero (CNZ) Search Application \u2014 a core system that enables buyer-side searches for commercial agreements. It also documents a comprehensive overview of the proposed structure and enhancements to the CNZ Search Framework, detailing key system components, integration points, and the expected architectural improvements.",
+    "persona": "Buyer",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "Claire Hastewell",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/721ea7b79cad6c0e06d41eeb",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/15efe917a4b0aac5cf25e082",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/721ea7b79cad6c0e06d41eeb",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Contract Award Service (CAS)",
+    "description": "Allows buyers to complete the core procurement activities Supplier filtering, Expression of Interest, Request for Information, Further Competition, Direct Award and Contract Awarding   Service Owner for CAS. Assisted Procurement teams use the platform as a customer for stage 1 on DOS and g-cloud DA (lot1-3). Not used after GC15 (end of life 2028?)",
+    "persona": "Buyer",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/a245d8821155c8f7ac96d103",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Alison Lisett",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/ad6c7c6d7f076a307f780287",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/a245d8821155c8f7ac96d103",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Contracts Finder Service",
+    "description": "Visibility of public sector contracts   Contracts Finder (CFS) is where non-devolved government contract opportunities and awards are advertised, above \u00a310,000 for central government and above \u00a325,000 for local government. This is devolved in Scotland, Wales and Northern Ireland, and they have their own sites.",
+    "persona": "Citizen, eSender, Buyer",
+    "hosting": "AWS-Cloud-CO",
+    "directorate": "Government Commercial Function",
+    "productManager": "Gary Scott",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/6263ec29c0bbcdb1c9d25a10",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/5c06dbcf011ee839053ac4b8",
+    "supportingOrganisation": "Goaco Group Ltd",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/6263ec29c0bbcdb1c9d25a10",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Digital Foundations",
+    "description": "previously known as Crown Marketplace. Legacy platform that provides down select(supplier filtering) for a small number of applications.",
+    "persona": "Central Government(Buyer), Wider public sector(Buyer), Admin, Buyer",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/1380543b2880e5d3098d358e",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/1380543b2880e5d3098d358e",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Digital Marketplace (DMP 1.5)",
+    "description": "Supporting platform to onboard suppliers for G-Cloud and DOS. Required for Procurement teams heading on these frameworks as well as assisted procurement teams for use of CAS (see above)",
+    "persona": "Supplier",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/7a94ffacfc3990420d601739",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/7a94ffacfc3990420d601739",
+    "hasProductOwner": false
+  },
+  {
+    "name": "DPS Marketplace",
+    "description": "Electronic Procurement system that enables development of contract opportunities for Good and Services.   The DPS Marketplace provides access to all procurements run by Crown Commercial Service using a Dynamic Purchasing System. Buyers can access framework agreements that meet common purchasing requirements across government.  DPS is an internal CCS product, jointly managed by CCS and NQC for support services.  NQC platform hosts all live DPS' from each category area as well as LVPS",
+    "persona": "Buyer",
+    "hosting": "Google-Cloud-NQC",
+    "directorate": "Commercial & Procurement Operations",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/942105db552ed2d7411fd9da",
+    "pmUrl": "",
+    "supportingOrganisation": "NQC Ltd",
+    "businessOwner": "Tricia Smith",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/79324a93238bacf62d1689fd",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/942105db552ed2d7411fd9da",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Enterprise Car Hire",
+    "description": "Enterprise Car Hire is a web-based vehicle hire portal that is used for CCS staff car hire needs. The service enables authorised CCS employees to book and manage vehicle rentals for work purposes through a dedicated booking portal.Enterprise Holdings provides business car rental services through their Enterprise Rent-A-Car brand, offering a wide range of vehicles and flexible rental options for corporate customers.There is a contract in place for this service which runs from 18/12/23 to 17/12/26, with options for 1\\+1\\+1 year extensions.  [https://docs.google.com/document/d/13u\\_Pifc3HQvkwblc1Ahmdk73tKwO-wU1gs1BhUCDRsc/edit?tab=t.0](https://docs.google.com/document/d/13u_Pifc3HQvkwblc1Ahmdk73tKwO-wU1gs1BhUCDRsc/edit?tab=t.0)",
+    "persona": "Staff",
+    "hosting": "SaaS",
+    "directorate": "Finance, Planning and Performance",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/7e11cf41f2ea95b849390232",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "James Atkinson",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/060f84786a2e647eaa6f3711",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/7e11cf41f2ea95b849390232",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Find A Grant",
+    "description": "Find a grant is a service that allows grant applications (buyers and citizens) to search government grants.  Users can:  *   access government grant funding  *   search and filter to find a grant that matches your needs  *   find out if you are eligible to apply for a grant  *   find out how to apply for a grant  This service will transfer ownership to GCA approx July 2026 (machinery of Government changes)",
+    "persona": "Buyer, Admin, Supplier, Citizen",
+    "hosting": "AWS-Cloud-CO",
+    "directorate": "Government Commercial Function",
+    "productManager": "Marc Leonard",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/4a27b311b01eada1648b6c85",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/4176152ff5382b7cc72efd81",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/4a27b311b01eada1648b6c85",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Find a Tender Service",
+    "description": "Find a Tender service is a search, evaluate and bida for high value contracts (usually above \u00a3139,688) in the UK\u2019s public and utilities sectors.   Users can search for information without registering, and create an account to receive email updates and save searches.  24 different forms are supported as required by current public procurement regulations inherited from the EU. Simplification is expected in future.  Find a Tender has replaced the EU\u2019s Tenders Electronic Daily from 1 January 2021 for high value contracts in the UK.",
+    "persona": "Buyer, Supplier, eSender",
+    "hosting": "AWS-Cloud-CO",
+    "directorate": "Government Commercial Function",
+    "productManager": "Gary Scott",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/77c386a8b71f297cd448f335",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/5c06dbcf011ee839053ac4b8",
+    "supportingOrganisation": "Goaco Group Ltd",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/77c386a8b71f297cd448f335",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Fleet Portal",
+    "description": "Standalone digital portal for fleet vehicle solutions.  Customer focussed tool enabling them to find pricing and technical information to support them in choosing the right vehicles for their fleets. It gives customers free access to technical and pricing information for all new cars and vans in the UK market.  [https://fleetportal.crowncommercial.gov.uk/home.mth](https://fleetportal.crowncommercial.gov.uk/home.mth)",
+    "persona": "Buyer",
+    "hosting": "SaaS",
+    "directorate": "Commercial & Procurement Operations",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/c4155866c7a7e49ad59585b1",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "Tammy Carter",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/c1f2047517b0dc6364a9ae24",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/c4155866c7a7e49ad59585b1",
+    "hasProductOwner": false
+  },
+  {
+    "name": "GCA Intranet",
+    "description": "This application serves as the internal communication and collaboration platform for the organization. It provides employees with access to company resources, announcements, and tools for document sharing, project collaboration, and team management. The application facilitates efficient information distribution and supports enhanced employee engagement and productivity. Features include role-based access control, customizable dashboards, and integration with other enterprise systems.  GO-LIVE: April 2026",
+    "persona": "Staff",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/f2d33a682b3575a2f842c47a",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Stephen Theobald",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/197b21fae2e8118b7ab641ee",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/f2d33a682b3575a2f842c47a",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Government Commercial College",
+    "description": "Government Commercial College is an educational platform designed to enhance procurement skills within government networks. It focuses on training and development tailored to the needs of public sector professionals involved in acquiring goods and services. The platform supports users by providing structured learning resources aimed at improving commercial capabilities across the government.  https://www.govcommercialcollege.co.uk/login/index.php  The Government Commercial College provides key training in commercial and conThe Government Commercial College provides key training in commercia",
+    "persona": "Staff",
+    "hosting": "3rd. Party",
+    "directorate": "Government Commercial Function",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/06e1874e62e54635905bfe00",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/06e1874e62e54635905bfe00",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Government eMarketplace (Basware)",
+    "description": "Basware provides a Government eMarketplace to our public sector buyers. Basware offers e-Catalogue and request for quotation (RFQ) functionality, often with integration to customers ERP systems, such as Oracle or SAP.  Customers can access catalogues for various frameworks also known as 'punchout' - which basically allows our customers that use basware to access CCS products on Mercato directly from Basware.  [https://buyers.mpuk.basware.com/](https://buyers.mpuk.basware.com/)",
+    "persona": "Buyer",
+    "hosting": "SaaS",
+    "directorate": "Commercial & Procurement Operations",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/d9eb9dfe1e2780a02b472698",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Rachel Hayes",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/348595804aaedf6452f8d057",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/d9eb9dfe1e2780a02b472698",
+    "hasProductOwner": false
+  },
+  {
+    "name": "iPayview",
+    "description": "iPayview is an application provided by CGI that enables employees to access and view payslips digitally. The application streamlines payroll information distribution by providing a centralised, self-service portal for payslip retrieval. This reduces administrative overhead associated with manual payslip distribution while ensuring secure access to personal payroll data.",
+    "persona": "Staff",
+    "hosting": "SaaS",
+    "directorate": "Human Resources",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/a0ba0499defdba3139c6a8cf",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/a0ba0499defdba3139c6a8cf",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Jaggaer (eSourcing)",
+    "description": "## Supplier Profile: Jaggaer Ltd  **Key Details**  *   **Supplier:** Jaggaer Ltd  *   **Contract End Date:** 31 March 2028  *   **Contract Tier:** Gold  ### System Overview  The Jaggaer eSourcing Portal is a website and sourcing platform that enables users to create commercial agreements for procurement purposes. Customers can use the platform to select relevant suppliers and commercial agreements.  ### Core Functions  **1\\. Internal Operations (CCS)**  *   **Regulated Procurements:** Provides functionality to conduct \"above threshold\" regulated procurements (i.e., \"OJEU\" level) to create new CCS commercial agreements.  *   **Assisted Procurement:** Facilitates \"call-off\" and \"open market\" procurements for customer requirements managed via the CCS \"assisted procurement\" service.  **2\\. Customer-Facing (Self-Service)**  *   **Call-Off Activity:** Offers a \"free to use\" self-service portal for customers to execute call-offs from most CCS commercial frameworks.  *   **Support:** Buyers and suppliers are supported through comprehensive guidance, regular webinars, and assistance from the internal eEnablement Team.  ### Modules & Capabilities  *   **Sourcing:** Core eSourcing functionalities.  *   **Award:** Awarding functionality, potentially utilizing an API that pulls through from Jaggaer (Commerce Decisions).  *   **Contract Management:** Includes contract management modules and \"Contract \\+\".  *   **Self-Serve:** Dedicated functions enabling customers to manage framework call-offs independently.",
+    "persona": "Admin, Buyer, Supplier",
+    "hosting": "SaaS",
+    "directorate": "Commercial & Procurement Operations",
+    "productManager": "John Girling",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/d7b85d55983af5ca93d02704",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/9473b6464ca7695d8c9419a8",
+    "supportingOrganisation": "",
+    "businessOwner": "Rachel Hayes",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/348595804aaedf6452f8d057",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/d7b85d55983af5ca93d02704",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Kahootz",
+    "description": "Secure platform for sharing category strategies  breaks down the barriers to collaboration across organisations, by combining a wide range of tools in one  secure and easy to use online workspace.",
+    "persona": "Buyer",
+    "hosting": "SaaS",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/bb3bd8e1fe23a97f395c1ae1",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/bb3bd8e1fe23a97f395c1ae1",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Matrix Booking System",
+    "description": "Matrix provides a 24/7/365 booking service and provides the following functionality:  *   Gives GCA employees the ability to book access passes, desks, meeting rooms, and facilities (at the above mentioned offices) via web and mobile. Plus office self check in display panels.  *   Allows GCA to monitor employees attending a particular site, or off site for both utilisation data and health and safety liabilities in the event of an incident. This Data is fed to GPA and OGP to measure utilisation of the government estate as a whole  *   Allows GCA to monitor and measure overall levels of office attendance   *   Helps GCA meet Health and Safety Requirements.  *   Provides Visitor Management with secure self service check-in  **Technical Information**  *   Links via an API to Workday (HR system) and Everbridge (Incident Management ) and data warehouse and Power BI.  *   All of the Matrix Interfaces utilise the Matrix API to communicate securely with the back-end.  *   Secure connections to UK and Irish Government hub Networks  *   Integration with 0365, G-suite and MS Teams as required  *   UK based software and hardware support and monitoring center  *   Designed to be highly accessible and WCAG 2.2 AA compliant",
+    "persona": "Staff",
+    "hosting": "SaaS",
+    "directorate": "Human Resources",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/2c2a018f0e233b00a37ddf2a",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Amanda Samuel",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/ccc4c2db1140176fa42f90b1",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/2c2a018f0e233b00a37ddf2a",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Mercateo (Tail Spend)",
+    "description": "[https://www.mercateo.co.uk/](https://www.mercateo.co.uk/) one of two supplier platforms available via the Tailspend agreement.",
+    "persona": "Buyer",
+    "hosting": "3rd. Party",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/f473968411d570cd7ad6f65f",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/f473968411d570cd7ad6f65f",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Paragon UK (Tail Spend)",
+    "description": "[otsmartpad.co.uk](http://otsmartpad.co.uk/) one of the two suppliers on the Tailspend agreement.",
+    "persona": "Buyer",
+    "hosting": "3rd. Party",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/b0c2560cc12cd9b82ac3475d",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/b0c2560cc12cd9b82ac3475d",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Partner Portal",
+    "description": "Allows a select number of Partners to view and edit their opportunities directly.",
+    "persona": "Supplier",
+    "hosting": "Cloud",
+    "directorate": "Customer Experience",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/68ffde2e84f0f7f4776c3efa",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/68ffde2e84f0f7f4776c3efa",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Print marketplace",
+    "description": "Print Marketplace is an online service to allow buyers to purchase print products such as leaflets, brochures and stationery.   The Print Marketplace shall enable buyers to obtain instant prices and compare quotes from a database of approved Print Suppliers. Buyers will then have the ability to place orders with their selected Print Supplier/s for their print requirements.  The system is developed and maintained by The APS Group.  Print Marketplace is a third-party platform with a CCS-operated authentication service at the front. The existing commercial agreement should run its course with the service being integrated with a future catalogue/contracting service combination for future iterations.  Rachel Hayes as owner ?",
+    "persona": "Buyer",
+    "hosting": "SaaS",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/36f262365ab5cbaee9e0564c",
+    "pmUrl": "",
+    "supportingOrganisation": "",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/36f262365ab5cbaee9e0564c",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Print Marketplace IDAM",
+    "description": "Point SSO solution for authenticating users onto the print management commercial agreement third-party supplier's digital solution",
+    "persona": "Buyer",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/b3cc069804f687f44b517efc",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/b3cc069804f687f44b517efc",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Public Procurement Gateway (PPG)",
+    "description": "Built to facilitate registration, identity and evidence service for buyers and suppliers.   It is composed of 3 parts:  *   IDAM/SSO - Single Sign On - developed to synchronise services and give users one place they can sign in to then either manage their account, or navigate through the dashboard to the CCS service they are looking for *   CII - Central Identification Index - This will tie all differing organisational identities together as a single organisational entity providing transparency, traceability and consistency to organisation identity and hierarchy. *   EL - Evidence Locker - Evidence locker allows buyers to create questionnaires, choosing from \u201cbest practice\u201d questions and send these to suppliers. It also allows the suppliers to answer, store those answers, reusing them to respond to other procurement opportunities creating a \u201ctell us once\u201d approach, saving them time, money and creating consistency.  Assisted Procurement teams use the platform to log in to CAS for stage 1 on DOS and g-cloud DA (lot1-3)",
+    "persona": "Supplier, Buyer",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/a64664fc98e3ae22b438da36",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/a64664fc98e3ae22b438da36",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Report Management Information (RMI)",
+    "description": "RMI stands for Report Management Information.   This is our Supplier management information (MI) portal, whereby suppliers submit, as per their contractual obligation, returns detailing contracts and invoices they have transacted against our agreements. This underpins our operating model with the data packets arising from RMI then being passed on to Workday for invoicing and Azure for data storage & analysis.  It is the system that suppliers use to tell GCA about the spend customers have with them. This information is then used to calculate the charge due to GCA from the suppliers.  BAU enhancement only, no radical redesign needed at this point. Longer term, will form the foundation for Spend Analytics, we've also had requests for running an RMI service for others externally.",
+    "persona": "Supplier",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "Digital and Data Services",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/d850a387c9779f9414576def",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Victoria Brown",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/33c0ef23822c2d93a9f6617d",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/d850a387c9779f9414576def",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Supplier Information Registration and Sign In(SIRSI)",
+    "description": "SIRSI is a part of wider solution that contributes to the Central Digital Platform together with other services like Find a Tender. The service will transition to GCA (from GCP) in July 2026\\. The design is micro services and is hosted on AWS.",
+    "persona": "Buyer, Supplier",
+    "hosting": "AWS-Cloud-CO",
+    "directorate": "Government Commercial Function",
+    "productManager": "Gary Scott",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/d8ec1053c1b2dd2907e19503",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/5c06dbcf011ee839053ac4b8",
+    "supportingOrganisation": "Goaco Group Ltd",
+    "businessOwner": "",
+    "businessOwnerUrl": "",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/d8ec1053c1b2dd2907e19503",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Supplier Registration Service",
+    "description": "Supplier Registration (SRS, Started as SID4Health, then SID4Gov). Allows suppliers to complete the Supplier Questionnaire and some SSO services; to be replaced by Conclave.  A Portal where contractors can look at the competition and complete a questionnaire to be registered onto the GCA framework   It is the application that provides the DPS service. Buyers have the opportunity to view all the contractors details   Supplier registration tool, includes SQ for DPS suppliers. Also manages supplier registration for Purchasing Platform",
+    "persona": "Supplier, Buyer",
+    "hosting": "Google-Cloud-NQC",
+    "directorate": "Commercial & Procurement Operations",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/c6aefb9317dfe63cba240d07",
+    "pmUrl": "",
+    "supportingOrganisation": "NQC Ltd",
+    "businessOwner": "Tricia Smith",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/79324a93238bacf62d1689fd",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/c6aefb9317dfe63cba240d07",
+    "hasProductOwner": false
+  },
+  {
+    "name": "The Purchasing Platform (Mercato)",
+    "description": "The Purchasing Platform is a cloud-based service provided by Mercato. Two different journey types are facilitated. The service hosts the Technology Products and Education Technology catalogues on a direct award (click and buy) basis.",
+    "persona": "Buyer",
+    "hosting": "SaaS",
+    "directorate": "",
+    "productManager": "",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/7d87a05f1ca45a7fed1c1d37",
+    "pmUrl": "",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Rachel Hayes, Stephen Gent",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/348595804aaedf6452f8d057, https://gca.ardoq.com/app/component-overview/454dc513ff8ed1256270dc00",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/7d87a05f1ca45a7fed1c1d37",
+    "hasProductOwner": false
+  },
+  {
+    "name": "Website / GOV.UK",
+    "description": "Corporate website",
+    "persona": "Supplier, Buyer",
+    "hosting": "AWS-Cloud-GCA",
+    "directorate": "",
+    "productManager": "Claire Hastewell",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/e8ec6259762ee6cf6beb4a8f",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/15efe917a4b0aac5cf25e082",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Sian Trew",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/28af3d87190f69eaa4857ba5",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/e8ec6259762ee6cf6beb4a8f",
+    "hasProductOwner": true
+  },
+  {
+    "name": "Workday",
+    "description": "HR./Team management (development reviews, holiday booking, job vacancies, L&D etc)   Workday is an on demand (cloud-based) financial management and human capital management software tool. CCS use Workday to provide Workday Recruitment (HR) and Workday Adaptive Insights (Finance) support to all CCS employees.   HCM and Applicant tracking system. All CCS employees have a Workday personnel account / profile and use Workday to book leave, monitor absence, conduct performance management and general line manager people management. All CCS's recruitment is also done through Workday. Recruitment approvals are put through Workday and then consequently advertised and progressed using Workday. Sift and interview records are kept on the system and offers are also accepted using Workday. Workday is also used for PO's   Consideration to be given to possible AI opportunities - chat bots to aid self serve, job description creation, sifting, interview questions creation etc   Financial forecasts are held in here   Creation of startegic workforce plans, syncs workforce plans HR People data with financial planning   Core Finance and HR System   Creation of startegic workforce plans, syncs workforce plans HR People data with financial planning   Interface in Adaptive planning that will add new planned FTE directly into the RRP process at the expected time in line with planning. This means everything signed off in Adaptive planning will automatically be addded in to workday RRP process at planned time, creating the push pull interface. This creates a recruitment pipeline and enables better planning of campaigns linked to required skills/roles.",
+    "persona": "Staff",
+    "hosting": "SaaS",
+    "directorate": "Digital and Data Services",
+    "productManager": "Lucy Bruce",
+    "appUrl": "https://gca.ardoq.com/app/component-overview/839c0baa62b376f360ceb0b0",
+    "pmUrl": "https://gca.ardoq.com/app/component-overview/53dc76786853dc03d8756ac3",
+    "supportingOrganisation": "Digital and Data Services",
+    "businessOwner": "Paul Craven, Kathryn Comrie",
+    "businessOwnerUrl": "https://gca.ardoq.com/app/component-overview/e9709591caa3d1c3625d5c29, https://gca.ardoq.com/app/component-overview/daea457464a219f90e7aa6d7",
+    "surveyUrl": "https://gca.ardoq.com/surveys/survey/4f774f2e7c09ac323e3ef4e5/component/839c0baa62b376f360ceb0b0",
+    "hasProductOwner": true
+  }
+];
+
+    const searchInput = document.getElementById("searchInput");
+    const personaFilter = document.getElementById("personaFilter");
+    const hostingFilter = document.getElementById("hostingFilter");
+    const directorateFilter = document.getElementById("directorateFilter");
+    const resultsGrid = document.getElementById("resultsGrid");
+    const resultsCount = document.getElementById("resultsCount");
+    const emptyState = document.getElementById("emptyState");
+
+    function getPersonaClass(personaString) {
+      if (!personaString) return "persona-default";
+      const firstPersona = personaString.split(',')[0].replace('(Buyer)', '').trim();
+      switch(firstPersona) {
+        case "Buyer": return "persona-buyer";
+        case "Staff": return "persona-staff";
+        case "Supplier": return "persona-supplier";
+        case "Citizen": return "persona-citizen";
+        case "Central Government": return "persona-central-gov";
+        case "Wider public sector": return "persona-wider-public";
+        case "eSender": return "persona-esender";
+        case "Admin": return "persona-admin";
+        default: return "persona-default";
+      }
+    }
+
+    function generateMetaHtml(app) {
+      let pmHTML = app.productManager || "N/A";
+      if (app.productManager && app.pmUrl) {
+        pmHTML = `<a href="${app.pmUrl}" target="_blank">${app.productManager}</a>`;
+      }
+      
+      let boHTML = app.businessOwner || "N/A";
+      if (app.businessOwner && app.businessOwnerUrl) {
+        const boNames = app.businessOwner.split(',').map(s => s.trim());
+        const boUrls = app.businessOwnerUrl.split(',').map(s => s.trim());
+        boHTML = boNames.map((name, idx) => {
+          const url = boUrls[idx] || boUrls[0];
+          return url ? `<a href="${url}" target="_blank">${name}</a>` : name;
+        }).join(', ');
+      }
+
+      return `
+        <div class="meta-row">
+          <span class="meta-label">Product Owner</span>
+          <span>${pmHTML}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Business Owner</span>
+          <span>${boHTML}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Supporting Org</span>
+          <span>${app.supportingOrganisation || "N/A"}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Persona</span>
+          <span>${app.persona || "N/A"}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Hosting</span>
+          <span>${app.hosting || "N/A"}</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Directorate</span>
+          <span>${app.directorate || "N/A"}</span>
+        </div>
+      `;
+    }
+
+    function createCard(app) {
+      const card = document.createElement("article");
+      const personaClass = getPersonaClass(app.persona);
+      card.className = `app-card ${personaClass}`;
+
+      const productTag = app.hasProductOwner ? '<span class="tag tag-product">PRODUCT</span>' : "";
+
+      const appTitleHTML = app.appUrl 
+        ? `<a href="${app.appUrl}" target="_blank">${app.name}</a>` 
+        : app.name;
+
+      let actionButtons = '';
+      if (app.appUrl) {
+        actionButtons += `<a href="${app.appUrl}" target="_blank" class="button button-secondary">View in Ardoq</a>`;
+      }
+      if (app.surveyUrl) {
+        actionButtons += `<a href="${app.surveyUrl}" target="_blank" class="button button-primary">Edit Data</a>`;
+      }
+
+      card.innerHTML = `
+        <h3>${appTitleHTML}</h3>
+        <p>${app.description}</p>
+
+        <div class="tags">
+          ${productTag}
+        </div>
+
+        <div class="meta">
+          ${generateMetaHtml(app)}
+        </div>
+        
+        <div class="card-actions">
+          ${actionButtons}
+        </div>
+      `;
+
+      return card;
+    }
+
+    function renderApplications() {
+      const searchTerm = searchInput.value.trim().toLowerCase();
+      const persona = personaFilter.value;
+      const hosting = hostingFilter.value;
+      const directorate = directorateFilter.value;
+
+      const filtered = applications.filter((app) => {
+        const matchesName = app.name.toLowerCase().includes(searchTerm);
+        const matchesPersona = !persona || (app.persona && app.persona.includes(persona));
+        const matchesHosting = !hosting || app.hosting === hosting;
+        const matchesDirectorate = !directorate || app.directorate === directorate;
+
+        return matchesName && matchesPersona && matchesHosting && matchesDirectorate;
+      });
+
+      resultsGrid.innerHTML = "";
+      filtered.forEach((app) => resultsGrid.appendChild(createCard(app)));
+
+      resultsCount.textContent =
+        `${filtered.length} ${filtered.length === 1 ? "application" : "applications"}`;
+
+      resultsGrid.style.display = filtered.length ? "grid" : "none";
+      emptyState.style.display = filtered.length ? "none" : "block";
+    }
+
+    document.getElementById("searchButton").addEventListener("click", renderApplications);
+
+    document.getElementById("clearButton").addEventListener("click", () => {
+      searchInput.value = "";
+      personaFilter.value = "";
+      hostingFilter.value = "";
+      directorateFilter.value = "";
+      renderApplications();
+      searchInput.focus();
+    });
+
+    searchInput.addEventListener("input", renderApplications);
+    [personaFilter, hostingFilter, directorateFilter].forEach((filter) => {
+      filter.addEventListener("change", renderApplications);
+    });
+
+    renderApplications();
+  </script>
+</body>
+</html>
