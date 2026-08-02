@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application Portfolio - All Applications</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <p class="service-name">Application Portfolio</p>
+        <p class="service-subtitle">Search and explore all applications across the organisation</p>
+      </div>
+      <div class="timestamp-tag">
+        Data loaded from data.json
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <section class="intro" aria-labelledby="page-title">
+      <h1 id="page-title">Find an application</h1>
+      <p>
+        Search by application name or filter the portfolio by persona, hosting organisation
+        and owning directorate.
+      </p>
+      <div class="guidance-notice" role="alert">
+        This portfolio includes every named application found in the Excel workbook, across all lifecycle phases.
+      </div>
+    </section>
+
+    <!-- Legend Panel -->
+    <section class="legend-panel" aria-label="Persona color legend">
+      <h3>Tile Border Colors (Primary Persona)</h3>
+      <div class="legend-items">
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-buyer)"></div> Buyer</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-staff)"></div> Staff</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-supplier)"></div> Supplier</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-citizen)"></div> Citizen</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-central-gov)"></div> Central Government</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-wider-public)"></div> Wider public sector</div>
+        <div class="legend-item"><div class="color-box" style="background-color: var(--color-esender)"></div> eSender</div>
+      </div>
+    </section>
+
+    <section class="filter-panel" aria-label="Application filters">
+      <div class="filter-grid">
+        <div class="field">
+          <label for="searchInput">Application name</label>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="For example, Supplier Portal"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="field">
+          <label for="personaFilter">Persona</label>
+          <select id="personaFilter">
+            <option value="">All personas</option>
+            <option value="Buyer">Buyer</option>
+            <option value="Central Government">Central Government</option>
+            <option value="Citizen">Citizen</option>
+            <option value="Staff">Staff</option>
+            <option value="Supplier">Supplier</option>
+            <option value="Wider public sector">Wider public sector</option>
+            <option value="eSender">eSender</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="hostingFilter">Hosting</label>
+          <select id="hostingFilter">
+            <option value="">All hosting</option>
+            <option value="3rd. Party">3rd. Party</option>
+            <option value="AWS-Cloud-CO">AWS-Cloud-CO</option>
+            <option value="AWS-Cloud-GCA">AWS-Cloud-GCA</option>
+            <option value="Cloud">Cloud</option>
+            <option value="Google-Cloud-NQC">Google-Cloud-NQC</option>
+            <option value="SaaS">SaaS</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="directorateFilter">Owning directorate</label>
+          <select id="directorateFilter">
+            <option value="">All directorates</option>
+            <option value="Commercial & Procurement Operations">Commercial & Procurement Operations</option>
+            <option value="Customer Experience">Customer Experience</option>
+            <option value="Digital and Data Services">Digital and Data Services</option>
+            <option value="Finance, Planning and Performance">Finance, Planning and Performance</option>
+            <option value="Government Commercial Function">Government Commercial Function</option>
+            <option value="Human Resources">Human Resources</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="button button-primary" id="searchButton" type="button">Search portfolio</button>
+        <button class="button button-secondary" id="clearButton" type="button">Clear filters</button>
+      </div>
+    </section>
+
+    <section aria-live="polite" aria-labelledby="results-title">
+      <div class="results-bar">
+        <h2 id="results-title">All Applications</h2>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+
+      <div class="card-grid" id="resultsGrid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <h3>No applications found</h3>
+        <p>Try changing or clearing one or more filters.</p>
+      </div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
