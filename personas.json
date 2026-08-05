@@ -1,0 +1,178 @@
+[
+  {
+    "description": null,
+    "last-updated": "2026-03-09T18:20:51.875Z",
+    "_id": "f7aaed28064bcf5b46cfd7d5",
+    "typeName": "Persona",
+    "Consumes--outgoing": "1380543b2880e5d3098d358e,4a27b311b01eada1648b6c85,d7b85d55983af5ca93d02704",
+    "parent": null,
+    "ardoq-entity-type": "component",
+    "name": "Admin",
+    "created": "2024-09-07T18:45:47.011Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "f7aaed28064bcf5b46cfd7d5",
+    "lastUpdated": "2026-03-09T18:20:51.875Z",
+    "component-key": "PWT-7",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  },
+  {
+    "description": "The Buyer persona",
+    "last-updated": "2026-03-31T13:05:27.166Z",
+    "_id": "fb467f03d15649971f00fcb4",
+    "typeName": "Persona",
+    "Consumes--outgoing": "1922d4e21697debd6788294f,0f7901fdeda256aa7685a2b6,721ea7b79cad6c0e06d41eeb,a245d8821155c8f7ac96d103,6263ec29c0bbcdb1c9d25a10,1380543b2880e5d3098d358e,942105db552ed2d7411fd9da,4a27b311b01eada1648b6c85,77c386a8b71f297cd448f335,c4155866c7a7e49ad59585b1,d9eb9dfe1e2780a02b472698,d7b85d55983af5ca93d02704,bb3bd8e1fe23a97f395c1ae1,b0c2560cc12cd9b82ac3475d,36f262365ab5cbaee9e0564c,b3cc069804f687f44b517efc,a64664fc98e3ae22b438da36,d8ec1053c1b2dd2907e19503,c6aefb9317dfe63cba240d07,7d87a05f1ca45a7fed1c1d37,f473968411d570cd7ad6f65f,e8ec6259762ee6cf6beb4a8f",
+    "parent": null,
+    "ardoq-entity-type": "component",
+    "name": "Buyer",
+    "created": "2024-03-07T11:06:27.829Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "fb467f03d15649971f00fcb4",
+    "lastUpdated": "2026-03-31T13:05:27.166Z",
+    "component-key": "PWT-1",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  },
+  {
+    "description": null,
+    "last-updated": "2024-09-06T11:04:46.934Z",
+    "_id": "39c1e5bb7539af647a3905ba",
+    "typeName": "Persona",
+    "Consumes--outgoing": "1380543b2880e5d3098d358e",
+    "parent": "fb467f03d15649971f00fcb4",
+    "ardoq-entity-type": "component",
+    "name": "Central Government(Buyer)",
+    "created": "2024-09-06T10:59:14.782Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "39c1e5bb7539af647a3905ba",
+    "lastUpdated": "2024-09-06T11:04:46.934Z",
+    "component-key": "PWT-4",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  },
+  {
+    "description": null,
+    "last-updated": "2026-03-09T17:47:58.446Z",
+    "_id": "33a07aa217460c7497a3d34e",
+    "typeName": "Persona",
+    "Consumes--outgoing": "0f7901fdeda256aa7685a2b6,6263ec29c0bbcdb1c9d25a10,4a27b311b01eada1648b6c85,14a1a2df8d117a5bce57580d",
+    "parent": null,
+    "ardoq-entity-type": "component",
+    "name": "Citizen",
+    "created": "2026-03-03T16:24:35.721Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "33a07aa217460c7497a3d34e",
+    "lastUpdated": "2026-03-09T17:47:58.446Z",
+    "component-key": "PWT-13",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  },
+  {
+    "description": "An eSender persona",
+    "last-updated": "2026-03-31T13:10:04.342Z",
+    "_id": "4bab63868b40f296a90ae4b4",
+    "typeName": "Persona",
+    "Consumes--outgoing": "6263ec29c0bbcdb1c9d25a10,77c386a8b71f297cd448f335",
+    "parent": null,
+    "ardoq-entity-type": "component",
+    "name": "eSender",
+    "created": "2026-02-03T14:53:26.807Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "4bab63868b40f296a90ae4b4",
+    "lastUpdated": "2026-03-31T13:10:04.342Z",
+    "component-key": "PWT-11",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  },
+  {
+    "description": null,
+    "last-updated": "2026-03-09T16:08:49.286Z",
+    "_id": "5f9998b51925435f1b135b67",
+    "typeName": "Persona",
+    "Consumes--outgoing": "8c172592bb38da6df31d1b11,7e11cf41f2ea95b849390232,f2d33a682b3575a2f842c47a,06e1874e62e54635905bfe00,a0ba0499defdba3139c6a8cf,c359399e0641170bb5b19000,2c2a018f0e233b00a37ddf2a,839c0baa62b376f360ceb0b0",
+    "parent": null,
+    "ardoq-entity-type": "component",
+    "name": "Staff",
+    "created": "2026-02-21T17:46:32.333Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "5f9998b51925435f1b135b67",
+    "lastUpdated": "2026-03-09T16:08:49.286Z",
+    "component-key": "PWT-12",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  },
+  {
+    "description": null,
+    "last-updated": "2026-03-09T16:00:39.114Z",
+    "_id": "417971734b56f2619d8a7d51",
+    "typeName": "Persona",
+    "Consumes--outgoing": "0f7901fdeda256aa7685a2b6,528ecd642986266d27a6e593,7a94ffacfc3990420d601739,4a27b311b01eada1648b6c85,77c386a8b71f297cd448f335,d7b85d55983af5ca93d02704,68ffde2e84f0f7f4776c3efa,a64664fc98e3ae22b438da36,d850a387c9779f9414576def,d8ec1053c1b2dd2907e19503,c6aefb9317dfe63cba240d07,e8ec6259762ee6cf6beb4a8f",
+    "parent": null,
+    "ardoq-entity-type": "component",
+    "name": "Supplier",
+    "created": "2024-03-07T11:13:26.612Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "417971734b56f2619d8a7d51",
+    "lastUpdated": "2026-03-09T16:00:39.114Z",
+    "component-key": "PWT-2",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  },
+  {
+    "description": null,
+    "last-updated": "2024-09-06T11:05:06.077Z",
+    "_id": "831e61e320bc1f9c200cfd55",
+    "typeName": "Persona",
+    "Consumes--outgoing": "1380543b2880e5d3098d358e",
+    "parent": "fb467f03d15649971f00fcb4",
+    "ardoq-entity-type": "component",
+    "name": "Wider public sector(Buyer)",
+    "created": "2024-09-06T10:58:56.681Z",
+    "rootWorkspace": "ee07bf56da3ffbc1dad312bf",
+    "typeId": "p1710967134876",
+    "id": "831e61e320bc1f9c200cfd55",
+    "lastUpdated": "2024-09-06T11:05:06.077Z",
+    "component-key": "PWT-3",
+    "ardoq": {
+      "entity-type": "component",
+      "rootWorkspaceName": "Persona"
+    },
+    "entityType": "Persona",
+    "model": "fa8473e2c93382f959247a19"
+  }
+]
